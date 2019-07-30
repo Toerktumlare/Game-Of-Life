@@ -5,14 +5,15 @@
 #include <SFML/Graphics.hpp>
 #include "AssetManager.hpp"
 #include "GameData.hpp"
+#include "Grid.hpp"
 
 class LifeState {
 public:
     bool isGenerating;
 private:
-    std::vector<std::vector<bool>> nextState;
-    std::vector<std::vector<bool>> currentState;
-    std::vector<std::vector<sf::Sprite>> sprites;;
+    Grid<bool> nextState;
+    Grid<bool> currentState;
+    Grid<sf::Sprite> sprites;
     GameDataRef data;
     int lastTime;
     sf::Clock clock;
@@ -31,5 +32,6 @@ public:
     void draw();
     
 private:
-    void updateCell(int height, int width, int neighbours);
+    int getNeighbours(const int x, const int y);
+    void updateCell(const int height, const int width, const int neighbours);
 };

@@ -49,6 +49,7 @@
 		E9C8107922EF250300482A3A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		E9C8107A22EF250C00482A3A /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
 		E9C8107B22EF251400482A3A /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		E9C8107C22F0746800482A3A /* Grid.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Grid.hpp; sourceTree = "<group>"; };
 		E9FCCAEB22DE083400711229 /* Game.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Game.cpp; sourceTree = "<group>"; };
 		E9FCCAF022DE088900711229 /* Game.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Game.hpp; sourceTree = "<group>"; };
 		E9FCCAF122DE290E00711229 /* AssetManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AssetManager.cpp; sourceTree = "<group>"; };
@@ -128,6 +129,7 @@
 				E9FCCAF522DE2E5100711229 /* InputManager.hpp */,
 				E9BDD7AB22DE4872005ACC6F /* LifeState.hpp */,
 				E94DEEFC22E5DC57009B03DB /* GameData.hpp */,
+				E9C8107C22F0746800482A3A /* Grid.hpp */,
 			);
 			path = includes;
 			sourceTree = "<group>";
