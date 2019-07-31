@@ -17,7 +17,6 @@
 		E9BDD7AC22DE4872005ACC6F /* LifeState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9BDD7AA22DE4872005ACC6F /* LifeState.cpp */; };
 		E9FCCAEC22DE083400711229 /* Game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9FCCAEB22DE083400711229 /* Game.cpp */; };
 		E9FCCAF322DE290E00711229 /* AssetManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9FCCAF122DE290E00711229 /* AssetManager.cpp */; };
-		E9FCCAF622DE2E5100711229 /* InputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9FCCAF422DE2E5100711229 /* InputManager.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -54,8 +53,6 @@
 		E9FCCAF022DE088900711229 /* Game.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Game.hpp; sourceTree = "<group>"; };
 		E9FCCAF122DE290E00711229 /* AssetManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AssetManager.cpp; sourceTree = "<group>"; };
 		E9FCCAF222DE290E00711229 /* AssetManager.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = AssetManager.hpp; sourceTree = "<group>"; };
-		E9FCCAF422DE2E5100711229 /* InputManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = InputManager.cpp; sourceTree = "<group>"; };
-		E9FCCAF522DE2E5100711229 /* InputManager.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = InputManager.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,7 +113,6 @@
 				E9FCCAF122DE290E00711229 /* AssetManager.cpp */,
 				E95D766E22B9BF0800EEFBD5 /* main.cpp */,
 				E9FCCAEB22DE083400711229 /* Game.cpp */,
-				E9FCCAF422DE2E5100711229 /* InputManager.cpp */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -126,7 +122,6 @@
 			children = (
 				E9FCCAF022DE088900711229 /* Game.hpp */,
 				E9FCCAF222DE290E00711229 /* AssetManager.hpp */,
-				E9FCCAF522DE2E5100711229 /* InputManager.hpp */,
 				E9BDD7AB22DE4872005ACC6F /* LifeState.hpp */,
 				E94DEEFC22E5DC57009B03DB /* GameData.hpp */,
 				E9C8107C22F0746800482A3A /* Grid.hpp */,
@@ -190,7 +185,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E9FCCAF622DE2E5100711229 /* InputManager.cpp in Sources */,
 				E9FCCAF322DE290E00711229 /* AssetManager.cpp in Sources */,
 				E9BDD7AC22DE4872005ACC6F /* LifeState.cpp in Sources */,
 				E95D766F22B9BF0800EEFBD5 /* main.cpp in Sources */,
