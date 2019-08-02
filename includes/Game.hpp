@@ -21,4 +21,7 @@ public:
     
     void displayGame();
     
+private:
+    void handleKeyCode(sf::Keyboard::Key key);
+    
 };

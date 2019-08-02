@@ -10,10 +10,10 @@ const int Game::FPS = 25;
 const int Game::SKIP_TICKS = 1000 / FPS;
 
 Game::Game(const int width, const int height, const std::string title) {
-    this->data->window.create(sf::VideoMode(width, height), title);
-    this->data->assets.loadTexture("tile", "assets/tile.png");
-    this->data->assets.loadTexture("tile2", "assets/tile2.png");
-    this->lifeState.init(this->data);
+    data->window.create(sf::VideoMode(width, height), title);
+    data->assets.loadTexture("tile", "assets/tile.png");
+    data->assets.loadTexture("tile2", "assets/tile2.png");
+    lifeState.init(this->data);
 };
 
 void Game::run(){
@@ -39,37 +39,53 @@ void Game::run(){
 
 void Game::updateGame(){
     
-    this->lifeState.update();
+    lifeState.update();
     
     sf::Event event;
-    while (this->data->window.pollEvent(event))
+    while (data->window.pollEvent(event))
     {
-        if (event.type == sf::Event::Closed) {
-            this->data->window.close();
-        }
-        
-        if(event.type == sf::Event::MouseButtonPressed) {
-            auto mouse_pos = sf::Mouse::getPosition(this->data->window);
-            sf::Vector2<float> translated_pos = this->data->window.mapPixelToCoords(mouse_pos);
-            this->lifeState.toggle(translated_pos);
-                        
-            std::cout << "mouse clicked at: " << event.mouseButton.x << " " << event.mouseButton.y << std::endl;
-        }
-        
-        if(event.type == sf::Event::KeyReleased) {
-            if (event.key.code == sf::Keyboard::Space) {
-                if(lifeState.isGenerating) {
-                    this->lifeState.stop();
-                } else {
-                    this->lifeState.start();
-                }
+        switch (event.type) {
+            case sf::Event::Closed: {
+                data->window.close();
+                break;
             }
+                
+            case sf::Event::MouseButtonPressed: {
+                auto mouse_pos = sf::Mouse::getPosition(data->window);
+                sf::Vector2<float> translated_pos = this->data->window.mapPixelToCoords(mouse_pos);
+                lifeState.toggle(translated_pos);
+                break;
+            }
+                
+            case sf::Event::KeyReleased: {
+                handleKeyCode(event.key.code);
+                break;
+            }
+                
+            default:
+                break;
         }
     }
 }
 
 void Game::displayGame(){
-    this->data->window.clear(sf::Color::Black);
-    this->lifeState.draw();
-    this->data->window.display();
+    data->window.clear(sf::Color::Black);
+    lifeState.draw();
+    data->window.display();
+}
+
+void Game::handleKeyCode(sf::Keyboard::Key key) {
+    switch (key) {
+        case sf::Keyboard::Space: {
+            if(lifeState.isGenerating) {
+                lifeState.stop();
+            } else {
+                lifeState.start();
+            }
+            break;
+        }
+            
+        default:
+            break;
+    }
 }
