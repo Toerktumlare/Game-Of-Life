@@ -9,21 +9,23 @@
 const int Game::FPS = 25;
 const int Game::SKIP_TICKS = 1000 / FPS;
 
-Game::Game(const int width, const int height, const std::string title) {
-    data->window.create(sf::VideoMode(width, height), title);
-    data->assets.loadTexture("tile", "assets/tile.png");
-    data->assets.loadTexture("tile2", "assets/tile2.png");
-    lifeState.init(this->data);
-};
+Game::Game() :
+    height(128), width(128), title("Game Of Life"), lifeState(this->data)
+{ };
 
 void Game::run(){
+    
+    data->window.create(sf::VideoMode(width, height), std::string(title));
+    data->assets.loadTexture("tile", "assets/tile.png");
+    data->assets.loadTexture("tile2", "assets/tile2.png");
+    lifeState.init();
     
     int nextGameTick = clock.getElapsedTime().asMilliseconds();
     struct timespec tim, tim2;
     tim.tv_sec = 0;
     tim.tv_nsec = 0;
     
-    while (this->data->window.isOpen()) {
+    while (data->window.isOpen()) {
         updateGame();
         displayGame();
         
@@ -88,4 +90,19 @@ void Game::handleKeyCode(sf::Keyboard::Key key) {
         default:
             break;
     }
+}
+
+Game& Game::setHeight(const int height) {
+    this->height = height;
+    return *this;
+}
+
+Game& Game::setWidth(const int width) {
+    this->width = width;
+    return *this;
+}
+
+Game& Game::setTitle(const std::string_view title) {
+    this->title = title;
+    return *this;
 }

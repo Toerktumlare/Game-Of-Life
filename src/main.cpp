@@ -2,6 +2,9 @@
 
 int main()
 {
-    Game game(2048, 1024, "Game Of Life");
+    Game game = Game()
+        .setHeight(1024)
+        .setWidth(2048)
+        .setTitle("Conways game of life");
     game.run();
 }

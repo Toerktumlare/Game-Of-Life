@@ -19,7 +19,9 @@ private:
     sf::Clock clock;
     
 public:
-    void init(GameDataRef &data);
+    LifeState(GameDataRef &data);
+    
+    void init();
         
     void toggle(sf::Vector2<float> translated_pos);
     

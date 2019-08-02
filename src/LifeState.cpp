@@ -3,9 +3,11 @@
 #include "LifeState.hpp"
 #include <SFML/System/Clock.hpp>
 
-
-void LifeState::init(GameDataRef &data) {
+LifeState::LifeState(GameDataRef &data) {
     this->data = data;
+};
+
+void LifeState::init() {
     auto size = this->data->assets.getTexture("tile")->getSize();
     int width = this->data->window.getSize().x / size.x;
     int height = this->data->window.getSize().y / size.y;
