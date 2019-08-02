@@ -1,13 +1,18 @@
 #pragma once
 
-#include <string>
+#include <string_view>
+#include <chrono>
+
 #include "LifeState.hpp"
+
+
+using fps_t = int;
 
 class Game {
 
 private:
-    static const int FPS;
-    static const int SKIP_TICKS;
+    static constexpr fps_t fps = 25;
+    static constexpr std::chrono::duration<int, std::ratio<1, 1000>> skip_ticks = std::chrono::milliseconds(1000 / fps);
     int height;
     int width;
     std::string_view title;

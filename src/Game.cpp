@@ -1,13 +1,10 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/Graphics.hpp>
-#include <time.h>
+#include <thread>
 #include <iostream>
 
 #include "LifeState.hpp"
 #include "Game.hpp"
-
-const int Game::FPS = 25;
-const int Game::SKIP_TICKS = 1000 / FPS;
 
 Game::Game() :
     height(128), width(128), title("Game Of Life"), lifeState(this->data)
@@ -20,22 +17,16 @@ void Game::run(){
     data->assets.loadTexture("tile2", "assets/tile2.png");
     lifeState.init();
     
-    int nextGameTick = clock.getElapsedTime().asMilliseconds();
-    struct timespec tim, tim2;
-    tim.tv_sec = 0;
-    tim.tv_nsec = 0;
+    std::chrono::milliseconds nextGameTick{ clock.getElapsedTime().asMilliseconds() };
     
     while (data->window.isOpen()) {
         updateGame();
         displayGame();
         
-        nextGameTick += SKIP_TICKS;
+        nextGameTick += skip_ticks;
         
-        tim.tv_nsec = (nextGameTick - clock.getElapsedTime().asMilliseconds());
-        
-        if(tim.tv_nsec >= 0){
-            nanosleep(&tim, &tim2);
-        }
+        std::chrono::milliseconds current_time{clock.getElapsedTime().asMilliseconds()};
+        std::this_thread::sleep_for(nextGameTick - current_time);
     }
 }
 

@@ -2,7 +2,7 @@
 
 int main()
 {
-    Game game = Game()
+    auto game = Game()
         .setHeight(1024)
         .setWidth(2048)
         .setTitle("Conways game of life");
