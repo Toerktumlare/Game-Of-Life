@@ -9,20 +9,20 @@ LifeState::LifeState(GameDataRef &data) {
 };
 
 void LifeState::init() {
-    auto size = this->data->assets.getTexture("tile")->getSize();
-    int width = this->data->window.getSize().x / size.x;
-    int height = this->data->window.getSize().y / size.y;
+    auto size = data->assets.getTexture("tile")->getSize();
+    int width = data->window.getSize().x / size.x;
+    int height = data->window.getSize().y / size.y;
     
     auto boolean = [](int x, int y, int height, int width) { return false; };
     
-    this->currentState.fill(height, width, boolean);
-    this->nextState.fill(height, width, boolean);
+    currentState.fill(height, width, boolean);
+    nextState.fill(height, width, boolean);
     
     int posX = 0;
     int posY = 0;
-    sf::Texture* tile = this->data->assets.getTexture("tile");
+    sf::Texture* tile = data->assets.getTexture("tile");
     
-    this->sprites.fill(height, width, [tile, posX, posY](int x, int y, int height, int width) mutable {
+    sprites.fill(height, width, [tile, posX, posY](int x, int y, int height, int width) mutable {
         sf::Sprite sprite;
         sprite.setTexture(*tile);
         sprite.setTextureRect(sf::IntRect(0, 0, tile->getSize().x, tile->getSize().y));
@@ -40,12 +40,12 @@ void LifeState::init() {
 
 void LifeState::toggle(sf::Vector2<float> translated_pos) {
     
-    this->sprites.forEach([&translated_pos, this](sf::Sprite sprite, int x, int y){
+    sprites.forEach([&translated_pos, this](sf::Sprite sprite, int x, int y){
         if(sprite.getGlobalBounds().contains(translated_pos)) {
-            if(this->currentState.get(x, y)) {
-                this->currentState.set(x, y, false);
+            if(currentState.get(x, y)) {
+                currentState.set(x, y, false);
             } else {
-                this->currentState.set(x, y, true);
+                currentState.set(x, y, true);
             }
         }
     });
@@ -53,16 +53,16 @@ void LifeState::toggle(sf::Vector2<float> translated_pos) {
 
 void LifeState::draw() {
     
-    sf::Texture* tile = this->data->assets.getTexture("tile");
-    sf::Texture* tile2 = this->data->assets.getTexture("tile2");
+    sf::Texture* tile = data->assets.getTexture("tile");
+    sf::Texture* tile2 = data->assets.getTexture("tile2");
     
     sprites.forEach([this, tile, tile2](sf::Sprite sprite, int x, int y){
-        if(this->currentState.get(x, y)) {
+        if(currentState.get(x, y)) {
             sprite.setTexture(*tile2);
         } else {
             sprite.setTexture(*tile);
         }
-        this->data->window.draw(sprite);
+        data->window.draw(sprite);
     });
 }
 
@@ -87,7 +87,7 @@ void LifeState::update() {
         {
             currentState.forEach([this](bool value, int x, int y) {
                 const int neighbours = this->getNeighbours(x, y);
-                this->updateCell(x, y, neighbours);
+                updateCell(x, y, neighbours);
             });
             
             currentState = nextState;
@@ -100,8 +100,8 @@ void LifeState::update() {
 int LifeState::getNeighbours(const int i, const int j) {
     int neighbours = 0;
     
-    if(i == this->currentState.sizeX()-1 && j == currentState.sizeY(i)-1) {
-        if(this->currentState.get(i-1, j)) {
+    if(i == currentState.sizeX()-1 && j == currentState.sizeY(i)-1) {
+        if(currentState.get(i-1, j)) {
             neighbours++;
         }
         
@@ -115,171 +115,171 @@ int LifeState::getNeighbours(const int i, const int j) {
         return neighbours;
     }
     
-    if(i == this->currentState.sizeX()-1 && j > 0) {
+    if(i == currentState.sizeX()-1 && j > 0) {
         
-        if(this->currentState.get(i, j-1)) {
+        if(currentState.get(i, j-1)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i-1, j-1)) {
+        if(currentState.get(i-1, j-1)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i-1, j)) {
+        if(currentState.get(i-1, j)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i-1, j+1)) {
+        if(currentState.get(i-1, j+1)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i, j+1)) {
+        if(currentState.get(i, j+1)) {
             neighbours++;
         }
         return neighbours;
     }
     
-    if(i == this->currentState.sizeX()-1 && j == 0) {
-        if(this->currentState.get(i-1, j)) {
+    if(i == currentState.sizeX()-1 && j == 0) {
+        if(currentState.get(i-1, j)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i-1, j+1)) {
+        if(currentState.get(i-1, j+1)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i, j+1)) {
+        if(currentState.get(i, j+1)) {
             neighbours++;
         }
         return neighbours;
     }
     
     if(i == 0 && j == 0) {
-        if(this->currentState.get(i, j+1)) {
+        if(currentState.get(i, j+1)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i+1, j+1)) {
+        if(currentState.get(i+1, j+1)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i+1, j)) {
+        if(currentState.get(i+1, j)) {
             neighbours++;
         }
         return neighbours;
     }
     
-    if(i == 0 && j == this->currentState.sizeY(i)-1) {
-        if(this->currentState.get(i, j-1)) {
+    if(i == 0 && j == currentState.sizeY(i)-1) {
+        if(currentState.get(i, j-1)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i+1, j-1)) {
+        if(currentState.get(i+1, j-1)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i+1, j)) {
+        if(currentState.get(i+1, j)) {
             neighbours++;
         }
         return neighbours;
     }
     
     if(i == 0 && j > 0) {
-        if(this->currentState.get(i, j+1)) {
+        if(currentState.get(i, j+1)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i+1, j+1)) {
+        if(currentState.get(i+1, j+1)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i+1, j)) {
+        if(currentState.get(i+1, j)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i+1, j-1)) {
+        if(currentState.get(i+1, j-1)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i, j-1)) {
+        if(currentState.get(i, j-1)) {
             neighbours++;
         }
         return neighbours;
     }
     
     if(i > 0 && j == 0) {
-        if(this->currentState.get(i-1, j)) {
+        if(currentState.get(i-1, j)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i-1, j+1)) {
+        if(currentState.get(i-1, j+1)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i, j+1)) {
+        if(currentState.get(i, j+1)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i+1, j+1)) {
+        if(currentState.get(i+1, j+1)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i+1, j)) {
+        if(currentState.get(i+1, j)) {
             neighbours++;
         }
         return neighbours;
     }
     
-    if(i > 0 && j == this->currentState.sizeY(i)-1) {
-        if(this->currentState.get(i-1, j-1)) {
+    if(i > 0 && j == currentState.sizeY(i)-1) {
+        if(currentState.get(i-1, j-1)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i-1, j)) {
+        if(currentState.get(i-1, j)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i, j-1)) {
+        if(currentState.get(i, j-1)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i+1, j-1)) {
+        if(currentState.get(i+1, j-1)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i+1, j)) {
+        if(currentState.get(i+1, j)) {
             neighbours++;
         }
         return neighbours;
     }
     
     if(i > 0 && j > 0) {
-        if(this->currentState.get(i-1, j)) {
+        if(currentState.get(i-1, j)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i-1, j+1)) {
+        if(currentState.get(i-1, j+1)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i, j+1)) {
+        if(currentState.get(i, j+1)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i+1, j+1)) {
+        if(currentState.get(i+1, j+1)) {
             neighbours++;
         }
         
-        if(this->currentState.get(i+1, j)) {
+        if(currentState.get(i+1, j)) {
             neighbours++;
         }
-        if(this->currentState.get(i+1, j-1)) {
+        if(currentState.get(i+1, j-1)) {
             neighbours++;
         }
-        if(this->currentState.get(i, j-1)) {
+        if(currentState.get(i, j-1)) {
             neighbours++;
         }
-        if(this->currentState.get(i-1, j-1)) {
+        if(currentState.get(i-1, j-1)) {
             neighbours++;
         }
         return neighbours;
@@ -289,19 +289,19 @@ int LifeState::getNeighbours(const int i, const int j) {
 
 void LifeState::updateCell(const int height, const int width, const int neighbours) {
     
-    const bool isActive = this->currentState.get(height, width);
+    const bool isActive = currentState.get(height, width);
     
     if(neighbours < 2 && isActive) {
-        this->nextState.set(height, width, false);
+        nextState.set(height, width, false);
         return;
     } else if((neighbours == 2 || neighbours == 3) && isActive) {
-        this->nextState.set(height, width, true);
+        nextState.set(height, width, true);
         return;
     } else if(neighbours > 3 && isActive) {
-       this->nextState.set(height, width, false);
+       nextState.set(height, width, false);
         return;
     } else if(isActive == false && neighbours == 3) {
-        this->nextState.set(height, width, true);
+        nextState.set(height, width, true);
         return;
     }
 }
