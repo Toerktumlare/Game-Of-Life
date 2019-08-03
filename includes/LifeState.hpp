@@ -1,11 +1,10 @@
 #pragma once
 
-#include <memory>
 #include <vector>
 #include <SFML/Graphics.hpp>
-#include "AssetManager.hpp"
 #include "GameData.hpp"
 #include "Grid.hpp"
+#include <chrono>
 
 class LifeState {
 public:
@@ -15,7 +14,8 @@ private:
     Grid<bool> currentState;
     Grid<sf::Sprite> sprites;
     GameDataRef data;
-    int lastTime;
+    std::chrono::duration<int, std::ratio<1, 1000>> lastTime = std::chrono::milliseconds{0};
+    std::chrono::milliseconds acc_delta = std::chrono::milliseconds{0};
     sf::Clock clock;
     
 public:

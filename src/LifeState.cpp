@@ -2,6 +2,7 @@
 #include <iostream>
 #include "LifeState.hpp"
 #include <SFML/System/Clock.hpp>
+#include <chrono>
 
 LifeState::LifeState(GameDataRef &data) {
     this->data = data;
@@ -35,8 +36,6 @@ void LifeState::init() {
         
         return sprite;
     });
-    
-    this->lastTime = 0;
 };
 
 void LifeState::toggle(sf::Vector2<float> translated_pos) {
@@ -80,22 +79,21 @@ void LifeState::stop() {
 void LifeState::update() {
     
     if(isGenerating) {
-        double time_counter = 0;
         
-        int thisTime = clock.getElapsedTime().asSeconds();
+        std::chrono::milliseconds nowTime{ clock.getElapsedTime().asMilliseconds() };
         
-        time_counter += (double)(thisTime - this->lastTime);
-        
-        if(time_counter > 0)
+        acc_delta += nowTime - lastTime;
+        if(acc_delta > std::chrono::milliseconds{30})
         {
             currentState.forEach([this](bool value, int x, int y) {
                 const int neighbours = this->getNeighbours(x, y);
                 this->updateCell(x, y, neighbours);
             });
             
-            this->currentState = nextState;
+            currentState = nextState;
+            acc_delta = std::chrono::milliseconds{0};
         }
-        this->lastTime = thisTime;
+        lastTime = nowTime;
     }
 }
 
