@@ -8,6 +8,6 @@ void AssetManager::loadTexture(std::string name, std::string filename) {
     }
 }
 
-sf::Texture *AssetManager::getTexture(std::string name) {
-    return &this->textures.at(name);
+sf::Texture& AssetManager::getTexture(std::string name) {
+    return textures.at(name);
 }

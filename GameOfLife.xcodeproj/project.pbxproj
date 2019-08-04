@@ -41,6 +41,7 @@
 		E98D3ED622C6EDE200003036 /* libsfml-window.2.5.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libsfml-window.2.5.1.dylib"; path = "extlib/lib/libsfml-window.2.5.1.dylib"; sourceTree = "<group>"; };
 		E98D3ED722C6EDE200003036 /* libsfml-network.2.5.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libsfml-network.2.5.1.dylib"; path = "extlib/lib/libsfml-network.2.5.1.dylib"; sourceTree = "<group>"; };
 		E98D3ED822C6EDE200003036 /* libsfml-system.2.5.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libsfml-system.2.5.1.dylib"; path = "extlib/lib/libsfml-system.2.5.1.dylib"; sourceTree = "<group>"; };
+		E9AC773D22F74ED90090C185 /* Vector2.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Vector2.hpp; sourceTree = "<group>"; };
 		E9BDD7A822DE3E5C005ACC6F /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = "<group>"; };
 		E9BDD7AA22DE4872005ACC6F /* LifeState.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LifeState.cpp; sourceTree = "<group>"; };
 		E9BDD7AB22DE4872005ACC6F /* LifeState.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LifeState.hpp; sourceTree = "<group>"; };
@@ -125,6 +126,7 @@
 				E9BDD7AB22DE4872005ACC6F /* LifeState.hpp */,
 				E94DEEFC22E5DC57009B03DB /* GameData.hpp */,
 				E9C8107C22F0746800482A3A /* Grid.hpp */,
+				E9AC773D22F74ED90090C185 /* Vector2.hpp */,
 			);
 			path = includes;
 			sourceTree = "<group>";

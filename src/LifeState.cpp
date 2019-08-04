@@ -3,13 +3,14 @@
 #include "LifeState.hpp"
 #include <SFML/System/Clock.hpp>
 #include <chrono>
+#include "Vector2.hpp"
 
 LifeState::LifeState(GameDataRef &data) {
     this->data = data;
 };
 
 void LifeState::init() {
-    auto size = data->assets.getTexture("tile")->getSize();
+    auto size = data->assets.getTexture("tile").getSize();
     int width = data->window.getSize().x / size.x;
     int height = data->window.getSize().y / size.y;
     
@@ -20,17 +21,17 @@ void LifeState::init() {
     
     int posX = 0;
     int posY = 0;
-    sf::Texture* tile = data->assets.getTexture("tile");
+    sf::Texture tile = data->assets.getTexture("tile");
     
     sprites.fill(height, width, [tile, posX, posY](int x, int y, int height, int width) mutable {
         sf::Sprite sprite;
-        sprite.setTexture(*tile);
-        sprite.setTextureRect(sf::IntRect(0, 0, tile->getSize().x, tile->getSize().y));
+        sprite.setTexture(tile);
+        sprite.setTextureRect(sf::IntRect(0, 0, tile.getSize().x, tile.getSize().y));
         sprite.setPosition(posX, posY);
-        posX += tile->getSize().x;
+        posX += tile.getSize().x;
         
         if(y == width-1) {
-            posY += tile->getSize().y;
+            posY += tile.getSize().y;
             posX = 0;
         }
         
@@ -53,14 +54,14 @@ void LifeState::toggle(sf::Vector2<float> translated_pos) {
 
 void LifeState::draw() {
     
-    sf::Texture* tile = data->assets.getTexture("tile");
-    sf::Texture* tile2 = data->assets.getTexture("tile2");
+    sf::Texture tile = data->assets.getTexture("tile");
+    sf::Texture tile2 = data->assets.getTexture("tile2");
     
     sprites.forEach([this, tile, tile2](sf::Sprite sprite, int x, int y){
         if(currentState.get(x, y)) {
-            sprite.setTexture(*tile2);
+            sprite.setTexture(tile2);
         } else {
-            sprite.setTexture(*tile);
+            sprite.setTexture(tile);
         }
         data->window.draw(sprite);
     });

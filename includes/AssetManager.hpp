@@ -10,6 +10,6 @@ private:
     
 public:
     void loadTexture (std::string name, std::string filename);
-    sf::Texture *getTexture(std::string name);
+    sf::Texture& getTexture(std::string name);
     
 };

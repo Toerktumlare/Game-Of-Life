@@ -2,9 +2,7 @@
 
 #include <string_view>
 #include <chrono>
-
 #include "LifeState.hpp"
-
 
 using fps_t = int;
 
