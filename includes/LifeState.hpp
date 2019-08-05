@@ -3,23 +3,28 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include "GameData.hpp"
-#include "Grid.hpp"
 #include <chrono>
 
 class LifeState {
+    
+    typedef std::vector<std::vector<sf::Sprite>> Sprites;
+    typedef std::vector<std::vector<bool>> State;
+    
 public:
     bool isGenerating;
 private:
-    Grid<bool> nextState;
-    Grid<bool> currentState;
-    Grid<sf::Sprite> sprites;
+    State cState;
+    State nState;
+    Sprites sprites;
     GameDataRef data;
     std::chrono::duration<int, std::ratio<1, 1000>> lastTime = std::chrono::milliseconds{0};
     std::chrono::milliseconds acc_delta = std::chrono::milliseconds{0};
     sf::Clock clock;
     
 public:
-    LifeState(GameDataRef &data);
+    LifeState();
+    
+    LifeState(size_t height, size_t width, GameDataRef &data);
     
     void init();
         

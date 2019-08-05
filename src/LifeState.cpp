@@ -3,53 +3,66 @@
 #include "LifeState.hpp"
 #include <SFML/System/Clock.hpp>
 #include <chrono>
-#include "Vector2.hpp"
 
-LifeState::LifeState(GameDataRef &data) {
-    this->data = data;
+LifeState::LifeState() : isGenerating(false) {
 };
 
-void LifeState::init() {
-    auto size = data->assets.getTexture("tile").getSize();
-    int width = data->window.getSize().x / size.x;
-    int height = data->window.getSize().y / size.y;
+LifeState::LifeState(size_t height, size_t width, GameDataRef &data) : isGenerating(false)
+{
+    this->data = data;
     
-    auto boolean = [](int x, int y, int height, int width) { return false; };
+    cState.reserve(height+2);
+    for (int i = 0; i < height+2; ++i) {
+        std::vector<bool> row;
+        row.reserve(width+2);
+        cState.push_back(row);
+        for (int j = 0; j < width+2; ++j) {
+            cState[i].push_back(false);
+        }
+    }
     
-    currentState.fill(height, width, boolean);
-    nextState.fill(height, width, boolean);
+    nState = cState;
+    
+    auto tile = data->assets.getTexture("tile");
     
     int posX = 0;
     int posY = 0;
-    sf::Texture tile = data->assets.getTexture("tile");
     
-    sprites.fill(height, width, [tile, posX, posY](int x, int y, int height, int width) mutable {
-        sf::Sprite sprite;
-        sprite.setTexture(tile);
-        sprite.setTextureRect(sf::IntRect(0, 0, tile.getSize().x, tile.getSize().y));
-        sprite.setPosition(posX, posY);
-        posX += tile.getSize().x;
-        
-        if(y == width-1) {
-            posY += tile.getSize().y;
-            posX = 0;
+    for (int i = 0; i < height; ++i) {
+        std::vector<sf::Sprite> row;
+        row.reserve(width);
+        sprites.push_back(row);
+        for (int j = 0; j < width; ++j) {
+            
+            sf::Sprite sprite;
+            sprite.setTexture(tile);
+            sprite.setTextureRect(sf::IntRect(0, 0, tile.getSize().x, tile.getSize().y));
+            sprite.setPosition(posX, posY);
+            posX += tile.getSize().x;
+            
+            if(j == width-1) {
+                posY += tile.getSize().y;
+                posX = 0;
+            }
+            
+            sprites[i].push_back(sprite);
         }
-        
-        return sprite;
-    });
+    }
 };
 
 void LifeState::toggle(sf::Vector2<float> translated_pos) {
     
-    sprites.forEach([&translated_pos, this](sf::Sprite sprite, int x, int y){
-        if(sprite.getGlobalBounds().contains(translated_pos)) {
-            if(currentState.get(x, y)) {
-                currentState.set(x, y, false);
-            } else {
-                currentState.set(x, y, true);
+    for (int i = 0; i < sprites.size(); ++i) {
+        for (int j = 0; j < sprites[i].size(); ++j) {
+            if(sprites[i][j].getGlobalBounds().contains(translated_pos)) {
+                if(cState[i+1][j+1]) {
+                    cState[i+1][j+1] = false;
+                } else {
+                    cState[i+1][j+1] = true;
+                }
             }
         }
-    });
+    }
 }
 
 void LifeState::draw() {
@@ -57,14 +70,16 @@ void LifeState::draw() {
     sf::Texture tile = data->assets.getTexture("tile");
     sf::Texture tile2 = data->assets.getTexture("tile2");
     
-    sprites.forEach([this, tile, tile2](sf::Sprite sprite, int x, int y){
-        if(currentState.get(x, y)) {
-            sprite.setTexture(tile2);
-        } else {
-            sprite.setTexture(tile);
+    for (int i = 0; i < sprites.size(); ++i) {
+        for (int j = 0; j < sprites[i].size(); ++j) {
+            if(cState[i+1][j+1]) {
+                sprites[i][j].setTexture(tile2);
+            } else {
+                sprites[i][j].setTexture(tile);
+            }
+            data->window.draw(sprites[i][j]);
         }
-        data->window.draw(sprite);
-    });
+    }
 }
 
 void LifeState::start() {
@@ -86,223 +101,45 @@ void LifeState::update() {
         acc_delta += nowTime - lastTime;
         if(acc_delta > std::chrono::milliseconds{30})
         {
-            currentState.forEach([this](bool value, int x, int y) {
-                const int neighbours = this->getNeighbours(x, y);
-                updateCell(x, y, neighbours);
-            });
-            
-            currentState = nextState;
+            for (int i = 1; i < cState.size()-1; ++i) {
+                for (int j = 1; j < cState[j].size()-1; ++j) {
+                    
+                    int neighbours = 0;
+                    for (int k = i-1; k < i + 2; ++k) {
+                        for (int l = j-1; l < j + 2; ++l) {
+                            if(cState[k][l]) {
+                                ++neighbours;
+                            }
+                        }
+                    }
+                    if(cState[i][j]) {
+                        --neighbours;
+                    }
+                    updateCell(i, j, neighbours);
+                }
+            }
+            cState = nState;
             acc_delta = std::chrono::milliseconds{0};
         }
         lastTime = nowTime;
     }
 }
 
-int LifeState::getNeighbours(const int i, const int j) {
-    int neighbours = 0;
-    
-    if(i == currentState.sizeX()-1 && j == currentState.sizeY(i)-1) {
-        if(currentState.get(i-1, j)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i-1, j-1)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i, j-1)) {
-            neighbours++;
-        }
-        return neighbours;
-    }
-    
-    if(i == currentState.sizeX()-1 && j > 0) {
-        
-        if(currentState.get(i, j-1)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i-1, j-1)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i-1, j)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i-1, j+1)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i, j+1)) {
-            neighbours++;
-        }
-        return neighbours;
-    }
-    
-    if(i == currentState.sizeX()-1 && j == 0) {
-        if(currentState.get(i-1, j)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i-1, j+1)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i, j+1)) {
-            neighbours++;
-        }
-        return neighbours;
-    }
-    
-    if(i == 0 && j == 0) {
-        if(currentState.get(i, j+1)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i+1, j+1)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i+1, j)) {
-            neighbours++;
-        }
-        return neighbours;
-    }
-    
-    if(i == 0 && j == currentState.sizeY(i)-1) {
-        if(currentState.get(i, j-1)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i+1, j-1)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i+1, j)) {
-            neighbours++;
-        }
-        return neighbours;
-    }
-    
-    if(i == 0 && j > 0) {
-        if(currentState.get(i, j+1)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i+1, j+1)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i+1, j)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i+1, j-1)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i, j-1)) {
-            neighbours++;
-        }
-        return neighbours;
-    }
-    
-    if(i > 0 && j == 0) {
-        if(currentState.get(i-1, j)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i-1, j+1)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i, j+1)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i+1, j+1)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i+1, j)) {
-            neighbours++;
-        }
-        return neighbours;
-    }
-    
-    if(i > 0 && j == currentState.sizeY(i)-1) {
-        if(currentState.get(i-1, j-1)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i-1, j)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i, j-1)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i+1, j-1)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i+1, j)) {
-            neighbours++;
-        }
-        return neighbours;
-    }
-    
-    if(i > 0 && j > 0) {
-        if(currentState.get(i-1, j)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i-1, j+1)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i, j+1)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i+1, j+1)) {
-            neighbours++;
-        }
-        
-        if(currentState.get(i+1, j)) {
-            neighbours++;
-        }
-        if(currentState.get(i+1, j-1)) {
-            neighbours++;
-        }
-        if(currentState.get(i, j-1)) {
-            neighbours++;
-        }
-        if(currentState.get(i-1, j-1)) {
-            neighbours++;
-        }
-        return neighbours;
-    }
-    return neighbours;
-}
-
 void LifeState::updateCell(const int height, const int width, const int neighbours) {
     
-    const bool isActive = currentState.get(height, width);
+    const bool isActive = cState[height][width];
     
     if(neighbours < 2 && isActive) {
-        nextState.set(height, width, false);
+        nState[height][width] = false;
         return;
     } else if((neighbours == 2 || neighbours == 3) && isActive) {
-        nextState.set(height, width, true);
+        nState[height][width] = true;
         return;
     } else if(neighbours > 3 && isActive) {
-       nextState.set(height, width, false);
+        nState[height][width] = false;
         return;
     } else if(isActive == false && neighbours == 3) {
-        nextState.set(height, width, true);
+        nState[height][width] = true;
         return;
     }
 }

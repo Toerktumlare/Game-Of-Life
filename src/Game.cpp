@@ -7,7 +7,9 @@
 #include "Game.hpp"
 
 Game::Game() :
-    height(128), width(128), title("Game Of Life"), lifeState(this->data)
+    height(128),
+    width(256),
+    title("Game Of Life")
 { };
 
 void Game::run(){
@@ -15,7 +17,12 @@ void Game::run(){
     data->window.create(sf::VideoMode(width, height), std::string(title));
     data->assets.loadTexture("tile", "assets/tile.png");
     data->assets.loadTexture("tile2", "assets/tile2.png");
-    lifeState.init();
+    
+    auto size = data->assets.getTexture("tile").getSize();
+    int width = data->window.getSize().x / size.x;
+    int height = data->window.getSize().y / size.y;
+    
+    lifeState = LifeState(height, width, data);
     
     std::chrono::milliseconds nextGameTick{ clock.getElapsedTime().asMilliseconds() };
     
@@ -45,7 +52,7 @@ void Game::updateGame(){
                 
             case sf::Event::MouseButtonPressed: {
                 auto mouse_pos = sf::Mouse::getPosition(data->window);
-                sf::Vector2<float> translated_pos = this->data->window.mapPixelToCoords(mouse_pos);
+                sf::Vector2<float> translated_pos = data->window.mapPixelToCoords(mouse_pos);
                 lifeState.toggle(translated_pos);
                 break;
             }

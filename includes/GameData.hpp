@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <stack>
 #include "AssetManager.hpp"
 #include "LifeState.hpp"
 
