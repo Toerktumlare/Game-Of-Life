@@ -4,6 +4,10 @@ A Game Of Life simulator written in C++.
 
 [Conway's game of life wikipedia](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
 
+<p align="center">
+    <img width="600" height="300" src="/images/game-of-life-example.gif">
+</p>
+
 ### How to build
 
 Make sure you have cmake installed and a compiler that supports at least C++11 (clang, gnu)
