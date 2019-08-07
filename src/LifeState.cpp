@@ -4,24 +4,23 @@
 #include <SFML/System/Clock.hpp>
 #include <chrono>
 
-LifeState::LifeState() : isGenerating(false) {
-};
-
 LifeState::LifeState(size_t height, size_t width, GameDataRef &data) : isGenerating(false)
 {
     this->data = data;
+    data->assets.loadTexture("tile", "assets/tile.png");
+    data->assets.loadTexture("tile2", "assets/tile2.png");
     
-    cState.reserve(height+2);
+    currentState.reserve(height+2);
     for (int i = 0; i < height+2; ++i) {
         std::vector<bool> row;
         row.reserve(width+2);
-        cState.push_back(row);
+        currentState.push_back(row);
         for (int j = 0; j < width+2; ++j) {
-            cState[i].push_back(false);
+            currentState[i].push_back(false);
         }
     }
     
-    nState = cState;
+    nextState = currentState;
     
     auto tile = data->assets.getTexture("tile");
     
@@ -55,10 +54,10 @@ void LifeState::toggle(sf::Vector2<float> translated_pos) {
     for (int i = 0; i < sprites.size(); ++i) {
         for (int j = 0; j < sprites[i].size(); ++j) {
             if(sprites[i][j].getGlobalBounds().contains(translated_pos)) {
-                if(cState[i+1][j+1]) {
-                    cState[i+1][j+1] = false;
+                if(currentState[i+1][j+1]) {
+                    currentState[i+1][j+1] = false;
                 } else {
-                    cState[i+1][j+1] = true;
+                    currentState[i+1][j+1] = true;
                 }
             }
         }
@@ -72,7 +71,7 @@ void LifeState::draw() {
     
     for (int i = 0; i < sprites.size(); ++i) {
         for (int j = 0; j < sprites[i].size(); ++j) {
-            if(cState[i+1][j+1]) {
+            if(currentState[i+1][j+1]) {
                 sprites[i][j].setTexture(tile2);
             } else {
                 sprites[i][j].setTexture(tile);
@@ -101,45 +100,51 @@ void LifeState::update() {
         acc_delta += nowTime - lastTime;
         if(acc_delta > std::chrono::milliseconds{30})
         {
-            for (int i = 1; i < cState.size()-1; ++i) {
-                for (int j = 1; j < cState[j].size()-1; ++j) {
+            for (int i = 1; i < currentState.size()-1; ++i) {
+                for (int j = 1; j < currentState[j].size()-1; ++j) {
                     
-                    int neighbours = 0;
-                    for (int k = i-1; k < i + 2; ++k) {
-                        for (int l = j-1; l < j + 2; ++l) {
-                            if(cState[k][l]) {
-                                ++neighbours;
-                            }
-                        }
-                    }
-                    if(cState[i][j]) {
-                        --neighbours;
-                    }
+                    int neighbours = calcNeighbours(i, j);
                     updateCell(i, j, neighbours);
                 }
             }
-            cState = nState;
+            currentState = nextState;
             acc_delta = std::chrono::milliseconds{0};
         }
         lastTime = nowTime;
     }
 }
 
+int LifeState::calcNeighbours(const int i, const int j) {
+    int neighbours = 0;
+    for (int k = i-1; k < i + 2; ++k) {
+        for (int l = j-1; l < j + 2; ++l) {
+            if(currentState[k][l]) {
+                ++neighbours;
+            }
+        }
+    }
+    if(currentState[i][j]) {
+        --neighbours;
+    }
+    
+    return neighbours;
+};
+
 void LifeState::updateCell(const int height, const int width, const int neighbours) {
     
-    const bool isActive = cState[height][width];
+    const bool isActive = currentState[height][width];
     
     if(neighbours < 2 && isActive) {
-        nState[height][width] = false;
+        nextState[height][width] = false;
         return;
     } else if((neighbours == 2 || neighbours == 3) && isActive) {
-        nState[height][width] = true;
+        nextState[height][width] = true;
         return;
     } else if(neighbours > 3 && isActive) {
-        nState[height][width] = false;
+        nextState[height][width] = false;
         return;
     } else if(isActive == false && neighbours == 3) {
-        nState[height][width] = true;
+        nextState[height][width] = true;
         return;
     }
 }

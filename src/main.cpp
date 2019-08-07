@@ -1,10 +1,10 @@
 #include "Game.hpp"
+#include "OpenGame.hpp"
 
 int main()
 {
-    auto game = Game()
-        .setHeight(2048)
-        .setWidth(2048)
-        .setTitle("Conways game of life");
+    Game game = OpenGame("Game of Life")
+        .cellHeight(32)
+        .cellWidth(64);
     game.run();
 }

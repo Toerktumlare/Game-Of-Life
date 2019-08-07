@@ -6,24 +6,20 @@
 #include "LifeState.hpp"
 #include "Game.hpp"
 
-Game::Game() :
-    height(128),
-    width(256),
-    title("Game Of Life")
+Game::Game(OpenGame& params) :
+    cellHeight(params.cellHeight_),
+    cellWidth(params.cellWidth_),
+    title(params.title_),
+    lifeState(params.cellHeight_, params.cellWidth_, data)
 { };
 
-void Game::run(){
+void Game::run()
+{
+    auto tileSize = data->assets.getTexture("tile").getSize();
+    unsigned int windowHeight = tileSize.y * cellHeight;
+    unsigned int windowWidth = tileSize.x * cellWidth;
     
-    data->window.create(sf::VideoMode(width, height), std::string(title));
-    data->assets.loadTexture("tile", "assets/tile.png");
-    data->assets.loadTexture("tile2", "assets/tile2.png");
-    
-    auto size = data->assets.getTexture("tile").getSize();
-    int width = data->window.getSize().x / size.x;
-    int height = data->window.getSize().y / size.y;
-    
-    lifeState = LifeState(height, width, data);
-    
+    data->window.create(sf::VideoMode(windowWidth, windowHeight), std::string(title));
     std::chrono::milliseconds nextGameTick{ clock.getElapsedTime().asMilliseconds() };
     
     while (data->window.isOpen()) {
@@ -37,7 +33,8 @@ void Game::run(){
     }
 }
 
-void Game::updateGame(){
+void Game::updateGame()
+{
     
     lifeState.update();
     
@@ -68,13 +65,15 @@ void Game::updateGame(){
     }
 }
 
-void Game::displayGame(){
+void Game::displayGame()
+{
     data->window.clear(sf::Color::Black);
     lifeState.draw();
     data->window.display();
 }
 
-void Game::handleKeyCode(sf::Keyboard::Key key) {
+void Game::handleKeyCode(sf::Keyboard::Key key)
+{
     switch (key) {
         case sf::Keyboard::Space: {
             if(lifeState.isGenerating) {
@@ -88,19 +87,4 @@ void Game::handleKeyCode(sf::Keyboard::Key key) {
         default:
             break;
     }
-}
-
-Game& Game::setHeight(const int height) {
-    this->height = height;
-    return *this;
-}
-
-Game& Game::setWidth(const int width) {
-    this->width = width;
-    return *this;
-}
-
-Game& Game::setTitle(const std::string_view title) {
-    this->title = title;
-    return *this;
 }

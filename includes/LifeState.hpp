@@ -13,8 +13,8 @@ class LifeState {
 public:
     bool isGenerating;
 private:
-    State cState;
-    State nState;
+    State currentState;
+    State nextState;
     Sprites sprites;
     GameDataRef data;
     std::chrono::duration<int, std::ratio<1, 1000>> lastTime = std::chrono::milliseconds{0};
@@ -25,8 +25,6 @@ public:
     LifeState();
     
     LifeState(size_t height, size_t width, GameDataRef &data);
-    
-    void init();
         
     void toggle(sf::Vector2<float> translated_pos);
     
@@ -39,6 +37,6 @@ public:
     void draw();
     
 private:
-    int getNeighbours(const int x, const int y);
+    int calcNeighbours(const int x, const int y);
     void updateCell(const int height, const int width, const int neighbours);
 };

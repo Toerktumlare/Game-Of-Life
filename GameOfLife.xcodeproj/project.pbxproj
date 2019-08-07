@@ -44,6 +44,7 @@
 		E9BDD7A822DE3E5C005ACC6F /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = "<group>"; };
 		E9BDD7AA22DE4872005ACC6F /* LifeState.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LifeState.cpp; sourceTree = "<group>"; };
 		E9BDD7AB22DE4872005ACC6F /* LifeState.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LifeState.hpp; sourceTree = "<group>"; };
+		E9C3768422F87C6100A9B075 /* OpenGame.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = OpenGame.hpp; sourceTree = "<group>"; };
 		E9C8107822EF24F500482A3A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		E9C8107922EF250300482A3A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		E9C8107A22EF250C00482A3A /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
@@ -123,6 +124,7 @@
 				E9FCCAF222DE290E00711229 /* AssetManager.hpp */,
 				E9BDD7AB22DE4872005ACC6F /* LifeState.hpp */,
 				E94DEEFC22E5DC57009B03DB /* GameData.hpp */,
+				E9C3768422F87C6100A9B075 /* OpenGame.hpp */,
 			);
 			path = includes;
 			sourceTree = "<group>";

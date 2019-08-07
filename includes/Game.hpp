@@ -3,6 +3,7 @@
 #include <string_view>
 #include <chrono>
 #include "LifeState.hpp"
+#include "OpenGame.hpp"
 
 using fps_t = int;
 
@@ -11,20 +12,15 @@ class Game {
 private:
     static constexpr fps_t fps = 25;
     static constexpr std::chrono::duration<int, std::ratio<1, 1000>> skip_ticks = std::chrono::milliseconds(1000 / fps);
-    int height;
-    int width;
+    unsigned int cellHeight;
+    unsigned int cellWidth;
     std::string_view title;
     sf::Clock clock;
     GameDataRef data = std::make_shared<GameData>();
     LifeState lifeState;
     
 public:
-    Game();
-    
-    Game& setHeight(const int height);
-    Game& setWidth(const int width);
-    Game& setTitle(const std::string_view title);
-
+    Game(OpenGame& openGame);
 
     void run();
     
@@ -34,6 +30,4 @@ public:
     
 private:
     void handleKeyCode(sf::Keyboard::Key key);
-    
-    
 };
