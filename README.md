@@ -24,7 +24,7 @@ Then use left mouseclick to activate cells and then space to start and stop the 
 
 #### Todos:
 
-* Adjustable size of the universe
+* ~~Adjustable size of the universe~~
 * Selectable smaller tiles default now is 32x32px
 * customizable colors to cells
 * fix bug when pausing and changing active cells it will continue from last state.
